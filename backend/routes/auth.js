@@ -114,8 +114,8 @@ router.post('/reset-password', async (req, res) => {
 router.post('/change-password', authenticateToken, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const user = await User.findById(req.user.id);
-    if (!user.password || !(await bcrypt.compare(currentPassword, user.password))) {
+    const user = await User.findByIdWithPassword(req.user.id);
+    if (!user || !user.password || !(await bcrypt.compare(currentPassword, user.password))) {
       return res.status(401).json({ message: 'Current password incorrect' });
     }
     await User.updatePassword(req.user.id, newPassword);

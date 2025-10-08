@@ -57,6 +57,21 @@ class User {
   }
 
   /**
+   * Finds a user by ID, including password for authentication purposes.
+   * @param {number} id - The user's ID.
+   * @returns {Promise<Object|null>} A promise that resolves with the user object or null if not found.
+   */
+  static async findByIdWithPassword(id) {
+    const sql = 'SELECT id, email, password, name, created_at FROM users WHERE id = ?';
+    return new Promise((resolve, reject) => {
+      db.query(sql, [id], (err, result) => {
+        if (err) reject(err);
+        else resolve(result[0]);
+      });
+    });
+  }
+
+  /**
    * Updates user fields by ID.
    * @param {number} id - The user's ID.
    * @param {Object} updates - An object with fields to update.
