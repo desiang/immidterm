@@ -66,6 +66,9 @@ router.post('/login', async (req, res) => {
  */
 router.post('/forgot-password', async (req, res) => {
   try {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      return res.status(500).json({ message: 'Email service not configured' });
+    }
     const { email } = req.body;
     const user = await User.findByEmail(email);
     if (!user) {
@@ -81,6 +84,7 @@ router.post('/forgot-password', async (req, res) => {
     });
     res.json({ message: 'Reset email sent' });
   } catch (err) {
+    console.error('Forgot password error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
